@@ -48,18 +48,14 @@
 			</ul>
 		</section>
 		<footer class="footer" ng-show="todos.length" ng-cloak>
-			<span class="todo-count"><strong>{{remainingCount}}</strong> <ng-pluralize
-					count="remainingCount"
-					when="{ one: 'item left', other: 'items left' }"></ng-pluralize> </span>
+			<span class="todo-count"><strong>{{remainingCount}}</strong> <ng-pluralize count="remainingCount" when="{ one: 'item left', other: 'items left' }"></ng-pluralize> </span>
 			<ul class="filters">
 				<li><a ng-class="{selected: status == ''} " href="#/">All</a></li>
-				<li><a ng-class="{selected: status == 'active'}"
-					href="#/active">Active</a></li>
-				<li><a ng-class="{selected: status == 'completed'}"
-					href="#/completed">Completed</a></li>
+				<li><a ng-class="{selected: status == 'active'}" href="#/active">Active</a></li>
+				<li><a ng-class="{selected: status == 'completed'}"	href="#/completed">Clear Completed</a></li>
 			</ul>
-			<button class="clear-completed" ng-click="clearCompletedTodos()"
-				ng-show="completedCount">Clear completed</button>
+				<button class="clear-completed" ng-click="clearCompleted()">Clear completed</button>
+					<!-- ng-show="completedCount"-->
 		</footer>
 	</section>
 	<footer class="info">

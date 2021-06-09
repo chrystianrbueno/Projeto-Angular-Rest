@@ -64,7 +64,7 @@ public class TodoRestFacede {
 	
 	@PUT
 	public void atualizarStatus(TodoModel todo) {
-		todoList.remove(todo);
-		todoList.add(todo);
+		boolean val = todoList.get(todoList.indexOf(todo)).isStatus();
+		todoList.get(todoList.indexOf(todo)).setStatus(!val);
 	}
 }

@@ -17,7 +17,6 @@ public class TodoModel implements Serializable {
 	}
 
 	public TodoModel(int id, String todo, boolean status) {
-		super();
 		this.id = id;
 		this.todo = todo;
 		this.status = status;
