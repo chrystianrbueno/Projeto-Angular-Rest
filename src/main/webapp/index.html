@@ -25,8 +25,7 @@
 		<header class="header">
 			<h1>todos</h1>
 			<form class="todo-form" ng-submit="addTodo()">
-				<input class="new-todo" placeholder="What needs to be done?"
-					ng-model="newTodo" ng-disabled="saving" autofocus>
+				<input class="new-todo" placeholder="What needs to be done?" ng-model="newTodo" ng-disabled="saving" autofocus>
 			</form>
 		</header>
 		<section class="main" ng-show="todos.length" ng-cloak>
@@ -34,33 +33,42 @@
 				ng-model="allChecked" ng-click="markAll(allChecked)"> <label
 				for="toggle-all">Mark all as complete</label>
 			<ul class="todo-list">
-				<li ng-repeat="todo in todos | filter:statusFilter track by $index"	ng-class="{completed: todo.status, editing: todo == editedTodo}">
+				<li ng-repeat="todo in todos | filter:statusFilter track by $index"
+					ng-class="{completed: todo.status, editing: todo == editedTodo}">
 					<div class="view">
-						<input class="toggle" type="checkbox" ng-model="todo.status" ng-change="toggleCompleted(todo)">
-						<label ng-dblclick="editTodo(todo)">{{todo.todo}}</label>
+						<input class="toggle" type="checkbox" ng-model="todo.status"
+							ng-change="toggleCompleted(todo)"> <label
+							ng-dblclick="editTodo(todo)">{{todo.todo}}</label>
 						<button class="destroy" ng-click="removeTodo(todo)"></button>
 					</div>
 					<form ng-submit="saveEdits(todo, 'submit')">
-						<input class="edit" ng-trim="false" ng-model="todo.todo" todo-escape="revertEdits(todo)" ng-blur="saveEdits(todo, 'blur')"
+						<input class="edit" ng-trim="false" ng-model="todo.todo"
+							todo-escape="revertEdits(todo)" ng-blur="saveEdits(todo, 'blur')"
 							todo-focus="todo == editedTodo">
 					</form>
 				</li>
 			</ul>
 		</section>
 		<footer class="footer" ng-show="todos.length" ng-cloak>
-			<span class="todo-count"><strong>{{remainingCount}}</strong> <ng-pluralize count="remainingCount" when="{ one: 'item left', other: 'items left' }"></ng-pluralize> </span>
+			<span class="todo-count"><strong>{{remainingCount}}</strong> <ng-pluralize
+					count="remainingCount"
+					when="{ one: 'item left', other: 'items left' }"></ng-pluralize> </span>
 			<ul class="filters">
 				<li><a ng-class="{selected: status == ''} " href="#/">All</a></li>
-				<li><a ng-class="{selected: status == 'active'}" href="#/active">Active</a></li>
-				<li><a ng-class="{selected: status == 'completed'}"	href="#/completed">Clear Completed</a></li>
+				<li><a ng-class="{selected: status == 'active'}"
+					href="#/active">Active</a></li>
+				<li><a ng-class="{selected: status == 'completed'}"
+					href="#/completed">Clear Completed</a></li>
 			</ul>
-				<button class="clear-completed" ng-click="clearCompleted()">Clear completed</button>
-					<!-- ng-show="completedCount"-->
+			<button class="clear-completed" ng-click="clearCompleted()">Clear
+				completed</button>
+			<!-- ng-show="completedCount"-->
 		</footer>
 	</section>
 	<footer class="info">
 		<p>
-			Desenvolvido por: <a href="https://github.com/chrystianrbueno/">Chrystian Rocha</a>
+			Desenvolvido por: <a href="https://github.com/chrystianrbueno/">Chrystian
+				Rocha</a>
 		</p>
 		<p>
 			Part of <a href="http://todomvc.com">TodoMVC</a>

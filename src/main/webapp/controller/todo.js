@@ -4,8 +4,6 @@ todoModulo.controller("todoController", function($scope, $http) {
 
 	urlTodo = 'http://localhost:8080/ProjetoToDoMVC/rest/todo';
 
-	$scope.newTodo = '';
-
 	$scope.showAll = function() {
 
 		$http.get(urlTodo).then(sucessCallback, errorCalback);
@@ -34,18 +32,13 @@ todoModulo.controller("todoController", function($scope, $http) {
 
 	$scope.addTodo = function() {
 
-		var newTodo = {
-			todo: $scope.newTodo.trim(),
-			status: false
-		};
-
-		if (!newTodo.todo)
-			return;
-
-		$http.post(urlTodo, newTodo).then(sucessCallback, errorCalback);
+		$http.post(urlTodo, $scope.newTodo).then(sucessCallback, errorCalback);
 
 		function sucessCallback() {
-			$scope.scope.todos.push(newTodo);
+
+			$scope.todos.push($scope.newTodo);
+			$scope.showAll();
+			$scope.newTodo = null;
 		}
 
 		function errorCalback(error) {

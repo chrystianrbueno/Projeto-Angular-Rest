@@ -37,7 +37,8 @@ public class TodoRestFacede {
 	}
 
 	@POST
-	public TodoModel salvarTodo(TodoModel novoTodo) {
+	public TodoModel salvarTodo(String newTodo) {
+		TodoModel novoTodo = new TodoModel(todoList.size() + 1, newTodo, false);
 		todoList.add(novoTodo);
 		return novoTodo;
 	}
