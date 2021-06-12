@@ -16,21 +16,21 @@ import javax.ws.rs.core.MediaType;
 import com.backend.model.TodoModel;
 
 @Path("/todo")
-@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 @Consumes(MediaType.APPLICATION_JSON)
 public class TodoRestFacede {
 
 	private static List<TodoModel> todoList = new ArrayList<TodoModel>();
-	
+
 	static {
-		todoList.add(new TodoModel(1,"Terminar Projeto", true));
-		todoList.add(new TodoModel(2,"Terminar Projeto2", false));
-		todoList.add(new TodoModel(3,"Terminar Projeto3", true));
-		todoList.add(new TodoModel(4,"Terminar Projeto4", true));
-		todoList.add(new TodoModel(5,"Terminar Projeto5", false));
-		todoList.add(new TodoModel(6,"Terminar Projeto6", false));
+		todoList.add(new TodoModel(1, "Terminar Projeto", true));
+		todoList.add(new TodoModel(2, "Terminar Projeto2", false));
+		todoList.add(new TodoModel(3, "Terminar Projeto3", true));
+		todoList.add(new TodoModel(4, "Terminar Projeto4", true));
+		todoList.add(new TodoModel(5, "Terminar Projeto5", false));
+		todoList.add(new TodoModel(6, "Terminar Projeto6", false));
 	}
-	
+
 	@GET
 	public List<TodoModel> getTodos() {
 		return todoList;
@@ -38,6 +38,7 @@ public class TodoRestFacede {
 
 	@POST
 	public TodoModel salvarTodo(String newTodo) {
+		System.out.println("entrandonalista");
 		TodoModel novoTodo = new TodoModel(todoList.size() + 1, newTodo, false);
 		todoList.add(novoTodo);
 		return novoTodo;
@@ -54,18 +55,23 @@ public class TodoRestFacede {
 	@DELETE
 	public void executaDELETECompleted() {
 		List<TodoModel> listDelete = new ArrayList<TodoModel>();
-		for(TodoModel todo : todoList) {
-			if(todo.isStatus()) {
+		for (TodoModel todo : todoList) {
+			if (todo.isStatus()) {
 				listDelete.add(todo);
 			}
 		}
 		todoList.removeAll(listDelete);
-		System.out.println("executando");
 	}
-	
+
 	@PUT
 	public void atualizarStatus(TodoModel todo) {
-		boolean val = todoList.get(todoList.indexOf(todo)).isStatus();
-		todoList.get(todoList.indexOf(todo)).setStatus(!val);
+		if(todoList.get(todoList.indexOf(todo)).getTodo().equals(todo.getTodo())){
+			System.out.println("entrou na troca de indice");
+			boolean val = todoList.get(todoList.indexOf(todo)).isStatus();
+			todoList.get(todoList.indexOf(todo)).setStatus(!val);
+		}else {
+			System.out.println("entrou na troca de nome");
+			todoList.get(todoList.indexOf(todo)).setTodo(todo.getTodo());
+		}
 	}
 }

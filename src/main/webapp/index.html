@@ -7,8 +7,10 @@
 <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 <meta name="description" content="">
 <meta name="author" content="">
+
 <script src="js/angular.min.js"></script>
 <script src="controller/todo.js"></script>
+
 <link rel="stylesheet" href="css/base.css">
 <link rel="stylesheet" href="css/index.css">
 
@@ -19,19 +21,18 @@
 </head>
 <body ng-controller="todoController">
 	<ng-view></ng-view>
-
+	
 
 	<section class="todoapp">
 		<header class="header">
 			<h1>todos</h1>
 			<form class="todo-form" ng-submit="addTodo()">
-				<input class="new-todo" placeholder="What needs to be done?" ng-model="newTodo" ng-disabled="saving" autofocus>
+				<input class="new-todo" placeholder="What needs to be done?" ng-model="newTodo" autofocus>
 			</form>
 		</header>
 		<section class="main" ng-show="todos.length" ng-cloak>
-			<input id="toggle-all" class="toggle-all" type="checkbox"
-				ng-model="allChecked" ng-click="markAll(allChecked)"> <label
-				for="toggle-all">Mark all as complete</label>
+			<input id="toggle-all" class="toggle-all" type="checkbox" ng-model="allChecked" ng-click="markAll(allChecked)" for="toggle-all"> 
+				<label>Mark all as complete</label>
 			<ul class="todo-list">
 				<li ng-repeat="todo in todos | filter:statusFilter track by $index"
 					ng-class="{completed: todo.status, editing: todo == editedTodo}">
@@ -43,8 +44,7 @@
 					</div>
 					<form ng-submit="saveEdits(todo, 'submit')">
 						<input class="edit" ng-trim="false" ng-model="todo.todo"
-							todo-escape="revertEdits(todo)" ng-blur="saveEdits(todo, 'blur')"
-							todo-focus="todo == editedTodo">
+							ng-blur="saveEdits(todo, 'blur')">
 					</form>
 				</li>
 			</ul>
@@ -54,18 +54,15 @@
 					count="remainingCount"
 					when="{ one: 'item left', other: 'items left' }"></ng-pluralize> </span>
 			<ul class="filters">
-				<li><a ng-class="{selected: status == ''} " href="#/">All</a></li>
-				<li><a ng-class="{selected: status == 'active'}"
-					href="#/active">Active</a></li>
-				<li><a ng-class="{selected: status == 'completed'}"
-					href="#/completed">Clear Completed</a></li>
+				<li><a ng-class="{selected: status == false}" href="#/">All</a></li>
+				<li><a ng-class="{selected: status == false}" href="#/active">Active</a></li>
+				<li><a ng-class="{selected: status == true}" href="#/completed">Completed</a></li>
 			</ul>
-			<button class="clear-completed" ng-click="clearCompleted()">Clear
-				completed</button>
-			<!-- ng-show="completedCount"-->
+				<button class="clear-completed" ng-show="completedCount" ng-click="clearCompleted()">Clear completed</button>
 		</footer>
 	</section>
 	<footer class="info">
+	
 		<p>
 			Desenvolvido por: <a href="https://github.com/chrystianrbueno/">Chrystian
 				Rocha</a>
@@ -75,39 +72,5 @@
 		</p>
 	</footer>
 </body>
-
-<!-- NAVBAR
-================================================== -->
-<!--  <body ng-controller="todoController">
-	<br>
-	<br>
-	<br>
-	<div class="container">
-
-		<div class="container">
-			<table class="table table-striped">
-				<th>ID</th>
-				<th>todo</th>
-				<th>status</th>
-				<tr ng-repeat="todo in todos">
-					<td>{{todo.id}}</td>
-					<td>{{todo.todo}}</td>
-					<td>{{todo.status}}</td>
-				</tr>
-			</table>
-		</div>
-
-		<div class="form-group" align="center">
-			<br>
-			<button type="submit" ng-click="all()"	class="btn btn-primary">All</button>
-			<button type="submit" ng-click="active()" class="btn btn-primary">Active</button>
-			<button type="submit" ng-click="completed()" class="btn btn-primary">Completed</button>
-			<button type="submit" ng-click="clearCompleted()" class="btn btn-primary">Clear Completed</button>
-			
-		</div>
-
-	</div>
-	<script src="js/bootstrap.min.js"></script>
-</body>
--->
 </html>
+
