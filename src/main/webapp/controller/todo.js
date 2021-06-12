@@ -5,17 +5,17 @@ todoModulo.controller("todoController", function($scope, $http, $filter) {
 	urlTodo = 'http://localhost:8080/ProjetoToDoMVC/rest/todo';
 
 	var todoName = '';
-	
-	$scope.showAll = function() {
 		
+	$scope.showAll = function() {
+
 		$http.get(urlTodo).then(sucessCallback, errorCalback);
 
 		function sucessCallback(todos) {
-			$scope.todos = todos.data;
+			$scope.listTodos = $scope.todos = todos.data;
 			$scope.remainingCount = $filter('filter')($scope.todos, { status: false }).length;
-			if($scope.remainingCount == $scope.todos.length){
+			if ($scope.remainingCount == $scope.todos.length) {
 				$scope.completedCount = false;
-			}else{
+			} else {
 				$scope.completedCount = true;
 			}
 		}
@@ -24,6 +24,18 @@ todoModulo.controller("todoController", function($scope, $http, $filter) {
 			alert(error);
 		}
 
+	}
+
+	$scope.showAllTodos = function() {
+		$scope.todos = $scope.listTodos;
+	}
+
+	$scope.showActiveTodos = function() {
+		$scope.todos = $filter('filter')($scope.listTodos, { status: false});
+	}
+
+	$scope.showCompletedTodos = function() {
+		$scope.todos = $filter('filter')($scope.listTodos, { status: true });
 	}
 
 	$scope.clearCompleted = function() {
@@ -52,7 +64,7 @@ todoModulo.controller("todoController", function($scope, $http, $filter) {
 			function errorCalback(error) {
 				alert(error);
 			}
-			
+
 			$scope.saving = false;
 		}
 	}
@@ -107,7 +119,7 @@ todoModulo.controller("todoController", function($scope, $http, $filter) {
 		}
 
 	};
-	
+
 	$scope.showAll();
 
 });
