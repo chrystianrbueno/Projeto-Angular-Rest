@@ -20,7 +20,8 @@ import com.backend.model.TodoModel;
 @Consumes(MediaType.APPLICATION_JSON)
 public class TodoRestFacede {
 	static int id = 0;
-
+	private boolean markAllTodo = false;
+	
 	private static List<TodoModel> todoList = new ArrayList<TodoModel>();
 
 	@GET
@@ -48,10 +49,11 @@ public class TodoRestFacede {
 	}
 	
 	@PUT
-	public void markAllTodo() {
-		System.out.println("marca todos");
+	@Path("/allChecked/{allChecked}")
+	public void markAllTodo(@PathParam("allChecked") Boolean status) {
+		System.out.println("entrou aqui " + status);
 		for(TodoModel todo : todoList) {
-			todo.setStatus(true);
+			todo.setStatus(status);
 		}
 	}
 

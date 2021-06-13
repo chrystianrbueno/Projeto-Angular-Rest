@@ -8,6 +8,7 @@ todoModulo.controller("todoController", function($scope, $http, $filter) {
 	var flagActives = false;
 	var flagCompletes = false;
 	var flagshowAll = false;
+	var listTodos;
 
 	//SELECT
 	$scope.showAll = function() {
@@ -15,14 +16,23 @@ todoModulo.controller("todoController", function($scope, $http, $filter) {
 		$http.get(urlTodo).then(sucessCallback, errorCalback);
 
 		function sucessCallback(todos) {
-			$scope.listTodos = $scope.todos = todos.data;
+			$scope.allChecked = true;
+			listTodos = $scope.todos = todos.data;
 			$scope.remainingCount = $filter('filter')($scope.todos, { status: false }).length;
+
 			if ($scope.remainingCount == $scope.todos.length) {
 				$scope.completedCount = false;
 			} else {
 				$scope.completedCount = true;
 			}
 
+			angular.forEach($scope.todos, function(verificaStatus, key) {
+				if (verificaStatus.status == false) {
+					$scope.allChecked = false;
+					keepGoing = false;
+				}
+			});
+			
 			if (flagCompletes) {
 				$scope.showCompletedTodos();
 			} else if (flagActives) {
@@ -30,6 +40,7 @@ todoModulo.controller("todoController", function($scope, $http, $filter) {
 			} else if (flagshowAll) {
 				$scope.showAllTodos();
 			}
+
 
 		}
 
@@ -77,18 +88,18 @@ todoModulo.controller("todoController", function($scope, $http, $filter) {
 
 	}
 
-	$scope.markAll = function(teste) {
-		alert(teste);
-		if ($scope.allChecked) {
-			$http.put(urlTodo).then(sucessCallback, errorCalback);
-			function sucessCallback() {
-				$scope.showAll();
-			}
+	$scope.markAll = function() {
+		$scope.allChecked = !($scope.allChecked);
+		alert($scope.allChecked);
 
-			function errorCalback(error) {
-				alert(error);
-			}
+		$http.put(urlTodo + '/allChecked/' + $scope.allChecked).then(sucessCallback, errorCalback);
 
+		function sucessCallback() {
+			$scope.showAll();
+		}
+
+		function errorCalback(error) {
+			alert(error);
 		}
 
 	}
@@ -143,21 +154,21 @@ todoModulo.controller("todoController", function($scope, $http, $filter) {
 	}
 
 	$scope.showAllTodos = function() {
-		$scope.todos = $scope.listTodos;
+		$scope.todos = listTodos;
 		flagshowAll = true;
 		flagActives = false;
 		flagCompletes = false;
 	}
 
 	$scope.showActiveTodos = function() {
-		$scope.todos = $filter('filter')($scope.listTodos, { status: false });
+		$scope.todos = $filter('filter')(listTodos, { status: false });
 		flagshowAll = false;
 		flagActives = true;
 		flagCompletes = false;
 	}
 
 	$scope.showCompletedTodos = function() {
-		$scope.todos = $filter('filter')($scope.listTodos, { status: true });
+		$scope.todos = $filter('filter')(listTodos, { status: true });
 		flagshowAll = false;
 		flagActives = false;
 		flagCompletes = true;
