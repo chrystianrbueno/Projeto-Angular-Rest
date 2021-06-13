@@ -19,17 +19,9 @@ import com.backend.model.TodoModel;
 @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 @Consumes(MediaType.APPLICATION_JSON)
 public class TodoRestFacede {
+	static int id = 0;
 
 	private static List<TodoModel> todoList = new ArrayList<TodoModel>();
-
-	static {
-		todoList.add(new TodoModel(1, "Terminar Projeto", true));
-		todoList.add(new TodoModel(2, "Terminar Projeto2", false));
-		todoList.add(new TodoModel(3, "Terminar Projeto3", true));
-		todoList.add(new TodoModel(4, "Terminar Projeto4", true));
-		todoList.add(new TodoModel(5, "Terminar Projeto5", false));
-		todoList.add(new TodoModel(6, "Terminar Projeto6", false));
-	}
 
 	@GET
 	public List<TodoModel> getTodos() {
@@ -38,10 +30,29 @@ public class TodoRestFacede {
 
 	@POST
 	public TodoModel salvarTodo(String newTodo) {
-		System.out.println("entrandonalista");
-		TodoModel novoTodo = new TodoModel(todoList.size() + 1, newTodo, false);
+		TodoModel novoTodo = new TodoModel(id, newTodo, false);
 		todoList.add(novoTodo);
+		id++;
 		return novoTodo;
+	}
+
+	@PUT
+	public void atualizarStatus(TodoModel todo) {
+		System.out.println(todo.getId());
+		if(todoList.get(todoList.indexOf(todo)).getTodo().equals(todo.getTodo())){
+			boolean val = todoList.get(todoList.indexOf(todo)).isStatus();
+			todoList.get(todoList.indexOf(todo)).setStatus(!val);
+		}else {
+			todoList.get(todoList.indexOf(todo)).setTodo(todo.getTodo());
+		}
+	}
+	
+	@PUT
+	public void markAllTodo() {
+		System.out.println("marca todos");
+		for(TodoModel todo : todoList) {
+			todo.setStatus(true);
+		}
 	}
 
 	@DELETE
@@ -63,15 +74,4 @@ public class TodoRestFacede {
 		todoList.removeAll(listDelete);
 	}
 
-	@PUT
-	public void atualizarStatus(TodoModel todo) {
-		if(todoList.get(todoList.indexOf(todo)).getTodo().equals(todo.getTodo())){
-			System.out.println("entrou na troca de indice");
-			boolean val = todoList.get(todoList.indexOf(todo)).isStatus();
-			todoList.get(todoList.indexOf(todo)).setStatus(!val);
-		}else {
-			System.out.println("entrou na troca de nome");
-			todoList.get(todoList.indexOf(todo)).setTodo(todo.getTodo());
-		}
-	}
 }

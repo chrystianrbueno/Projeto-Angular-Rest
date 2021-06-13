@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="author" content="Chrystian Rocha">
-<meta name="description" content="Projeto todo MVC - Angular + REST">
+<meta name="description" content="">
 
 <script src="js/angular.min.js"></script>
 <script src="controller/todo.js"></script>
@@ -39,16 +39,16 @@
 		</header>
 
 		<section class="main" ng-show="todos.length" ng-cloak>
-			
-			<input id="toggle-all" class="toggle-all" type="checkbox" ng-model="allChecked" ng-click="markAll(allChecked)" for="toggle-all">
-			<label>Mark all as complete</label>
+						
+			<input id="toggle-all" class="toggle-all" type="checkbox" ng-model="allChecked" ng-click="markAll()" for="toggle-all">
+			<label for="toggle-all">Mark all as complete</label>
 			
 			<ul class="todo-list">
 			
 				<li ng-repeat="todo in todos | filter:statusFilter track by $index" ng-class="{completed: todo.status, editing: todo == editedTodo}">
 					<div class="view">
 					
-						<input class="toggle" type="checkbox" ng-model="todo.status" ng-change="toggleCompleted(todo)"> 
+						<input class="toggle" type="checkbox" ng-model="todo.status" ng-change="todoCompleted(todo)"> 
 						<label ng-dblclick="editTodo(todo)">{{todo.todo}}</label>
 						<button class="destroy" ng-click="removeTodo(todo)"></button>
 					
@@ -66,7 +66,7 @@
 		
 		</section>
 		
-		<footer class="footer" ng-show="listTodos.length" ng-cloak>
+		<footer class="footer" ng-cloak>
 		
 			<span class="todo-count">
 					<strong>{{remainingCount}}</strong> 

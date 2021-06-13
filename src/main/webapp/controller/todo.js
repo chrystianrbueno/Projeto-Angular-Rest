@@ -5,7 +5,11 @@ todoModulo.controller("todoController", function($scope, $http, $filter) {
 	urlTodo = 'http://localhost:8080/ProjetoToDoMVC/rest/todo';
 
 	var todoName = '';
-		
+	var flagActives = false;
+	var flagCompletes = false;
+	var flagshowAll = false;
+
+	//SELECT
 	$scope.showAll = function() {
 
 		$http.get(urlTodo).then(sucessCallback, errorCalback);
@@ -18,6 +22,15 @@ todoModulo.controller("todoController", function($scope, $http, $filter) {
 			} else {
 				$scope.completedCount = true;
 			}
+
+			if (flagCompletes) {
+				$scope.showCompletedTodos();
+			} else if (flagActives) {
+				$scope.showActiveTodos();
+			} else if (flagshowAll) {
+				$scope.showAllTodos();
+			}
+
 		}
 
 		function errorCalback(error) {
@@ -26,18 +39,78 @@ todoModulo.controller("todoController", function($scope, $http, $filter) {
 
 	}
 
-	$scope.showAllTodos = function() {
-		$scope.todos = $scope.listTodos;
+	//INSERT
+	$scope.addTodo = function() {
+		if (!($scope.newTodo == undefined)) {
+			$http.post(urlTodo, $scope.newTodo).then(sucessCallback, errorCalback);
+
+			function sucessCallback() {
+				$scope.saving = true;
+				if ($scope.remainingCount == $scope.todos.length) {
+					$scope.completedCount = false;
+				} else {
+					$scope.completedCount = true;
+				}
+				$scope.showAll();
+				$scope.newTodo = null;
+				$scope.saving = false;
+			}
+
+			function errorCalback(error) {
+				alert(error);
+			}
+
+		}
 	}
 
-	$scope.showActiveTodos = function() {
-		$scope.todos = $filter('filter')($scope.listTodos, { status: false});
+	//UPDATE
+	$scope.todoCompleted = function(todo) {
+		$http.put(urlTodo, todo).then(sucessCallback, errorCalback);
+
+		function sucessCallback() {
+			$scope.showAll();
+		}
+
+		function errorCalback(error) {
+			alert(error);
+		}
+
 	}
 
-	$scope.showCompletedTodos = function() {
-		$scope.todos = $filter('filter')($scope.listTodos, { status: true });
+	$scope.markAll = function(teste) {
+		alert(teste);
+		if ($scope.allChecked) {
+			$http.put(urlTodo).then(sucessCallback, errorCalback);
+			function sucessCallback() {
+				$scope.showAll();
+			}
+
+			function errorCalback(error) {
+				alert(error);
+			}
+
+		}
+
 	}
 
+	$scope.saveEdits = function(updatedTodo, event) {
+
+
+		if (event === 'blur' && $scope.saveEvent === 'submit') {
+			$scope.saveEvent = null;
+			return;
+		}
+
+		$scope.saveEvent = event;
+		if (todoName == updatedTodo.todo || updatedTodo.todo == '') {
+			$scope.showAll();
+		} else {
+			$scope.todoCompleted(updatedTodo);
+		}
+
+	}
+
+	//REMOVE
 	$scope.clearCompleted = function() {
 		$http.delete(urlTodo).then(sucessCallback, errorCalback);
 
@@ -47,25 +120,6 @@ todoModulo.controller("todoController", function($scope, $http, $filter) {
 
 		function errorCalback(error) {
 			alert(error);
-		}
-	}
-
-	$scope.addTodo = function() {
-		if (!($scope.newTodo == undefined)) {
-			$http.post(urlTodo, $scope.newTodo).then(sucessCallback, errorCalback);
-
-			function sucessCallback() {
-				$scope.saving = false;
-				$scope.todos.push($scope.newTodo);
-				$scope.showAll();
-				$scope.newTodo = null;
-			}
-
-			function errorCalback(error) {
-				alert(error);
-			}
-
-			$scope.saving = false;
 		}
 	}
 
@@ -81,44 +135,33 @@ todoModulo.controller("todoController", function($scope, $http, $filter) {
 		}
 	}
 
-
-	$scope.toggleCompleted = function(todo) {
-		$http.put(urlTodo, todo).then(sucessCallback, errorCalback);
-
-		function sucessCallback() {
-			$scope.showAll();
-		}
-
-		function errorCalback(error) {
-			alert(error);
-		}
-
-	}
+	//FUNCTIONS
 
 	$scope.editTodo = function(todo) {
 		$scope.editedTodo = todo;
 		todoName = todo.todo;
-		// Clone the original todo to restore it on demand.
-	};
+	}
 
-	$scope.saveEdits = function(updatedTodo, event) {
-		// Blur events are automatically triggered after the form submit event.
-		// This does some unfortunate logic handling to prevent saving twice.
+	$scope.showAllTodos = function() {
+		$scope.todos = $scope.listTodos;
+		flagshowAll = true;
+		flagActives = false;
+		flagCompletes = false;
+	}
 
+	$scope.showActiveTodos = function() {
+		$scope.todos = $filter('filter')($scope.listTodos, { status: false });
+		flagshowAll = false;
+		flagActives = true;
+		flagCompletes = false;
+	}
 
-		if (event === 'blur' && $scope.saveEvent === 'submit') {
-			$scope.saveEvent = null;
-			return;
-		}
-
-		$scope.saveEvent = event;
-		if (todoName == updatedTodo.todo || updatedTodo.todo == '') {
-			$scope.showAll();
-		} else {
-			$scope.toggleCompleted(updatedTodo);
-		}
-
-	};
+	$scope.showCompletedTodos = function() {
+		$scope.todos = $filter('filter')($scope.listTodos, { status: true });
+		flagshowAll = false;
+		flagActives = false;
+		flagCompletes = true;
+	}
 
 	$scope.showAll();
 
