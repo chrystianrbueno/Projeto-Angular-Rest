@@ -2,19 +2,20 @@ todoModulo = angular.module('todoModulo', []);
 
 todoModulo.controller("todoController", function($scope, $http, $filter) {
 
-	urlTodo = 'http://localhost:8080/ProjetoToDoMVC/rest/todo';
+urlTodo = 'http://localhost:8080/ProjetoToDoMVC/rest/todo';
 
-	var todoName = '';
-	var flagActives = false;
-	var flagCompletes = false;
-	var flagshowAll = false;
-	var flagReverse = false;
+var todoName = '';
+
+var flagActives = false;
+var flagCompletes = false;
+var flagReverse = false;
+
+document.getElementById('toggle-all').checked = $scope.allChecked = true;
 
 	//SELECT
 	$scope.showAll = function() {
 
 		$http.get(urlTodo).then(sucessCallback, errorCalback);
-		document.getElementById('toggle-all').checked = $scope.allChecked = true;
 
 		function sucessCallback(todos) {
 
@@ -49,7 +50,7 @@ todoModulo.controller("todoController", function($scope, $http, $filter) {
 
 				$scope.showActiveTodos();
 
-			} else if (flagshowAll) {
+			} else {
 
 				$scope.showAllTodos();
 
@@ -68,13 +69,11 @@ todoModulo.controller("todoController", function($scope, $http, $filter) {
 	//INSERT
 	$scope.addTodo = function() {
 
-		if ( $scope.newTodo != undefined && $scope.newTodo.trim()) {
+		if ($scope.newTodo != undefined && $scope.newTodo.trim()) {
 
 			$http.post(urlTodo, $scope.newTodo).then(sucessCallback, errorCalback);
 
 			function sucessCallback() {
-
-				$scope.saving = true;
 
 				if ($scope.remainingCount == $scope.todos.length) {
 
@@ -88,11 +87,8 @@ todoModulo.controller("todoController", function($scope, $http, $filter) {
 
 				$scope.showAll();
 				$scope.newTodo = null;
-				$scope.saving = false;
 
 			}
-
-
 
 			function errorCalback(error) {
 
@@ -190,12 +186,13 @@ todoModulo.controller("todoController", function($scope, $http, $filter) {
 
 	}
 
-	//FUNCTIONS
+	//SUPPORT FUNCTIONS
 
 	$scope.editTodo = function(todo) {
 
 		$scope.editedTodo = todo;
 		todoName = todo.todo;
+
 	}
 
 	$scope.revertEdits = function(todo) {
@@ -206,14 +203,20 @@ todoModulo.controller("todoController", function($scope, $http, $filter) {
 
 	}
 
-	$scope.saveEdits = function(updatedTodo, event) {
+	$scope.saveEdits = function(changedTodo, event) {
 
 		if (!(flagReverse)) {
-			if (updatedTodo.todo == '' || !updatedTodo.todo.trim()) {
-				$scope.removeTodo(updatedTodo);
-			}else if ((todoName != updatedTodo.todo)) {
-				$scope.updateTodo(updatedTodo);
+
+			if (changedTodo.todo == '' || !changedTodo.todo.trim()) {
+
+				$scope.removeTodo(changedTodo);
+
+			} else if ((todoName != changedTodo.todo)) {
+
+				$scope.updateTodo(changedTodo);
+
 			}
+
 		}
 
 		$scope.showAll();
@@ -224,9 +227,11 @@ todoModulo.controller("todoController", function($scope, $http, $filter) {
 	$scope.showAllTodos = function() {
 
 		$scope.todos = $scope.listTodos;
-		flagshowAll = true;
+
+
 		flagActives = false;
 		flagCompletes = false;
+
 		$scope.selectedShowAll = true;
 		$scope.selectedShowActive = false;
 		$scope.selectedShowCompleted = false;
@@ -236,9 +241,10 @@ todoModulo.controller("todoController", function($scope, $http, $filter) {
 	$scope.showActiveTodos = function() {
 
 		$scope.todos = $filter('filter')($scope.listTodos, { status: false });
-		flagshowAll = false;
+
 		flagActives = true;
 		flagCompletes = false;
+
 		$scope.selectedShowAll = false;
 		$scope.selectedShowActive = true;
 		$scope.selectedShowCompleted = false;
@@ -248,9 +254,10 @@ todoModulo.controller("todoController", function($scope, $http, $filter) {
 	$scope.showCompletedTodos = function() {
 
 		$scope.todos = $filter('filter')($scope.listTodos, { status: true });
-		flagshowAll = false;
+
 		flagActives = false;
 		flagCompletes = true;
+
 		$scope.selectedShowAll = false;
 		$scope.selectedShowActive = false;
 		$scope.selectedShowCompleted = true;
@@ -262,35 +269,36 @@ todoModulo.controller("todoController", function($scope, $http, $filter) {
 
 });
 
-todoModulo.directive('todoEscape', function() {
-
-	'use strict';
-
-	var ESCAPE_KEY = 27;
-
-	return function(scope, elem, attrs) {
-		elem.bind('keydown', function(event) {
-			if (event.keyCode === ESCAPE_KEY) {
-				scope.$apply(attrs.todoEscape);
-			}
-		});
-
-		scope.$on('$destroy', function() {
-			elem.unbind('keydown');
-		});
-	};
-});
-
-todoModulo.directive('todoFocus', function todoFocus($timeout) {
-	'use strict';
-
-	return function(scope, elem, attrs) {
-		scope.$watch(attrs.todoFocus, function(newVal) {
-			if (newVal) {
-				$timeout(function() {
-					elem[0].focus();
-				}, 0, false);
-			}
-		});
-	};
-});
+	//EVENT SCRIPTS
+	todoModulo.directive('todoEscape', function() {
+	
+		'use strict';
+	
+		var ESCAPE_KEY = 27;
+	
+		return function(scope, elem, attrs) {
+			elem.bind('keydown', function(event) {
+				if (event.keyCode === ESCAPE_KEY) {
+					scope.$apply(attrs.todoEscape);
+				}
+			});
+	
+			scope.$on('$destroy', function() {
+				elem.unbind('keydown');
+			});
+		};
+	});
+	
+	todoModulo.directive('todoFocus', function todoFocus($timeout) {
+		'use strict';
+	
+		return function(scope, elem, attrs) {
+			scope.$watch(attrs.todoFocus, function(newVal) {
+				if (newVal) {
+					$timeout(function() {
+						elem[0].focus();
+					}, 0, false);
+				}
+			});
+		};
+	});
